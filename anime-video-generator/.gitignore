@@ -1,0 +1,21 @@
+# Environments
+venv/
+env/
+.env
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Output and Data
+output/
+data/
+logs/
+models/
+*.db
+
+# OS generated files
+.DS_Store
+Thumbs.db

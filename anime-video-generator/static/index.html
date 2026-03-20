@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anime Video Generator</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Anime Studio UI</h1>
+
+      <div class="form-group">
+        <label for="idea">Story idea</label>
+        <textarea id="idea" rows="3" placeholder="A mysterious samurai arrives at a futuristic cyberpunk city..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="style">Visual Aesthetic</label>
+        <select id="style">
+          <option value="ghibli" selected>Studio Ghibli (Soft & Magical)</option>
+          <option value="naruto">Shounen (Action & Bold)</option>
+          <option value="cyberpunk">Cyberpunk (Neon & Dark)</option>
+          <option value="romance">Shojo (Romantic & Pastel)</option>
+          <option value="fantasy">Dark Fantasy (Grim & Epic)</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="display: flex; gap: 16px;">
+        <div style="flex: 1;">
+          <label for="language">Voice Language</label>
+          <select id="language">
+            <option value="en" selected>English</option>
+            <option value="ja">Japanese</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="ko">Korean</option>
+          </select>
+        </div>
+        <div style="width: 120px;">
+          <label for="num_scenes">Scenes</label>
+          <input id="num_scenes" type="number" min="1" max="12" value="5" />
+        </div>
+      </div>
+
+      <label>Generation Settings</label>
+      <div class="checkbox-grid">
+        <label class="check">
+          <input type="checkbox" id="enable_lip_sync" checked />
+          Lip Sync
+        </label>
+        <label class="check">
+          <input type="checkbox" id="enable_music" checked />
+          Music & SFX
+        </label>
+        <label class="check">
+          <input type="checkbox" id="low_end" />
+          Fast Render
+        </label>
+        <label class="check">
+          <input type="checkbox" id="enable_upload_youtube" />
+          Auto-Upload
+        </label>
+      </div>
+
+      <button id="btnGenerate">Generate Animation</button>
+
+      <div id="status" class="status">Waiting for your story idea...</div>
+      <a id="downloadLink" class="hidden" href="#" target="_blank">Download Final Animation (.mp4)</a>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

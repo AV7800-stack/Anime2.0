@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Anime Generator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container dash-container">
+        <header class="dash-header">
+            <h2>Welcome, {{ user.username }}</h2>
+            <button onclick="document.cookie='access_token=; Max-Age=0; path=/'; window.location.href='/';" class="btn-danger">Logout</button>
+        </header>
+        <main>
+            <div class="glass-card">
+                <h3>Create New Anime</h3>
+                <form id="generateForm">
+                    <textarea name="prompt" placeholder="Enter your anime story idea... (e.g., 'A cyberpunk samurai fighting in neo-Tokyo')" rows="4" required></textarea>
+                    <div class="settings-grid">
+                        <select name="style">
+                            <option value="cinematic">Cinematic Anime</option>
+                            <option value="ghibli">Ghibli Style</option>
+                            <option value="shonen">Action Shonen</option>
+                            <option value="dark">Dark Fantasy</option>
+                        </select>
+                        <select name="voice">
+                            <option value="narrator1">Deep Narrator</option>
+                            <option value="anime_girl">Anime Female</option>
+                        </select>
+                    </div>
+                    <label class="toggle-label"><input type="checkbox" name="low_end_mode" value="true" checked> Low-End Mode (Faster, uses CPU, Mock generation for testing)</label>
+                    <button type="submit" class="btn-primary btn-large">Generate Anime Video</button>
+                </form>
+            </div>
+            <div id="statusArea" class="status-box hidden"></div>
+            <div class="history-section">
+                <h3>Recent Outputs</h3>
+                <p class="small">Generated videos will appear in the /output folder.</p>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.getElementById('generateForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const statusArea = document.getElementById('statusArea');
+            statusArea.classList.remove('hidden');
+            statusArea.innerText = "Initializing AI Pipeline...";
+            try {
+                const res = await fetch('/api/generate', { method: 'POST', body: formData });
+                const data = await res.json();
+                statusArea.innerHTML = `Job <b>${data.job_id}</b> started! <br>Check your console and the <code>/output/${data.job_id}</code> folder.`;
+            } catch (err) {
+                statusArea.innerText = "Error starting job.";
+            }
+        };
+    </script>
+</body>
+</html>

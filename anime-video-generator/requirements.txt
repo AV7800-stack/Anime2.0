@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+jinja2
+python-multipart
+sqlalchemy
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+openai
+diffusers
+transformers
+accelerate
+moviepy
+edge-tts
+pillow
