@@ -1,8 +1,3 @@
-"""
-Anime2.0 FastAPI Backend - Production Ready
-Minimal, Error-Free Version for Render Deployment
-"""
-
 import os
 import logging
 from fastapi import FastAPI, HTTPException
@@ -12,19 +7,18 @@ import requests
 from typing import Optional, Dict, Any
 from datetime import datetime
 import uuid
+from pymongo import MongoClient
+from PIL import Image
+import io
+import base64
+from moviepy.editor import VideoFileClip
+import json
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="Anime2.0 API",
-    description="Production Ready FastAPI Backend",
-    version="1.0.0"
-)
+app = FastAPI(title="Anime2.0 API", version="1.0.0")
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,32 +27,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Request Models
 class GenerateRequest(BaseModel):
     prompt: str
     type: str = "image"
     style: str = "anime"
-    width: int = 512
-    height: int = 512
-    duration: int = 5
 
-# In-memory storage
-generations = []
-
-# Startup event
 @app.on_event("startup")
 async def startup_event():
-    logger.info("🚀 Anime2.0 API starting up...")
-    logger.info(f"🌍 Environment: {os.getenv('NODE_ENV', 'development')}")
-    logger.info(f"📡 PORT: {os.getenv('PORT', '8000')}")
-    logger.info("✅ API started successfully!")
+    try:
+        logger.info("🚀 Anime2.0 API starting up...")
+        logger.info(f"🌍 Environment: {os.getenv('NODE_ENV', 'development')}")
+        logger.info(f"📡 PORT: {os.getenv('PORT', '10000')}")
+        
+        mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/anime2")
+        try:
+            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+            client.server_info()
+            logger.info("✅ MongoDB connected successfully")
+        except:
+            logger.warning("⚠️ MongoDB connection failed, using in-memory storage")
+        
+        logger.info("✅ API started successfully!")
+    except Exception as e:
+        logger.error(f"❌ Startup error: {str(e)}")
 
-# Shutdown event
 @app.on_event("shutdown")
 async def shutdown_event():
     logger.info("🛑 API shutting down...")
 
-# Root endpoint - Health check
 @app.get("/")
 async def root():
     return {
@@ -66,17 +62,15 @@ async def root():
         "message": "Anime2.0 API is working!",
         "version": "1.0.0",
         "environment": os.getenv("NODE_ENV", "development"),
-        "port": os.getenv("PORT", "8000"),
+        "port": os.getenv("PORT", "10000"),
         "timestamp": datetime.now().isoformat()
     }
 
-# Health check endpoint
 @app.get("/health")
 async def health():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "uptime": "running",
         "services": {
             "anime": "available",
             "story": "available",
@@ -85,16 +79,14 @@ async def health():
         }
     }
 
-# Generate anime image
 @app.post("/generate")
 async def generate_anime(request: GenerateRequest):
-    """Generate anime content using Pollinations.ai"""
     try:
         if request.type == "image":
             enhanced_prompt = f"{request.prompt}, anime style, {request.style}, high quality"
-            image_url = f"https://image.pollinations.ai/prompt/{enhanced_prompt}?style={request.style}&width={request.width}&height={request.height}"
+            image_url = f"https://image.pollinations.ai/prompt/{enhanced_prompt}?style={request.style}"
             
-            result = {
+            return {
                 "success": True,
                 "type": "image",
                 "image_url": image_url,
@@ -103,16 +95,16 @@ async def generate_anime(request: GenerateRequest):
             }
             
         elif request.type == "story":
-            story_prompt = f"anime story: {request.prompt}, with characters and plot"
+            story_prompt = f"anime story: {request.prompt}"
             story_url = f"https://text.pollinations.ai/{story_prompt}"
             
             try:
                 response = requests.get(story_url, timeout=30)
-                story = response.text if response.status_code == 200 else f"Anime Story: {request.prompt}\n\nOnce upon a time in a world of anime magic..."
+                story = response.text if response.status_code == 200 else f"Anime Story: {request.prompt}"
             except:
-                story = f"Anime Story: {request.prompt}\n\nOnce upon a time in a world of anime magic..."
+                story = f"Anime Story: {request.prompt}"
             
-            result = {
+            return {
                 "success": True,
                 "type": "story",
                 "story": story,
@@ -121,54 +113,34 @@ async def generate_anime(request: GenerateRequest):
             
         elif request.type == "video":
             frame_urls = []
-            for i in range(min(request.duration, 5)):
+            for i in range(5):
                 frame_prompt = f"{request.prompt}, frame {i+1}, anime style"
-                frame_url = f"https://image.pollinations.ai/prompt/{frame_prompt}?style=anime&width=512&height=512"
+                frame_url = f"https://image.pollinations.ai/prompt/{frame_prompt}?style=anime"
                 frame_urls.append(frame_url)
             
-            result = {
+            return {
                 "success": True,
                 "type": "video",
                 "frame_urls": frame_urls,
-                "frames": len(frame_urls),
+                "frames": 5,
                 "prompt": request.prompt
             }
             
         else:
             raise HTTPException(status_code=400, detail="Invalid generation type")
-        
-        # Store in memory
-        generation = {
-            "id": str(uuid.uuid4()),
-            "type": request.type,
-            "prompt": request.prompt,
-            "result": result,
-            "created_at": datetime.now().isoformat()
-        }
-        generations.append(generation)
-        
-        # Keep only last 50
-        if len(generations) > 50:
-            generations.pop(0)
-        
-        return result
-        
+            
     except Exception as e:
         logger.error(f"Generation error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Chat endpoint
 @app.post("/chat")
 async def chat_endpoint(request: dict):
-    """Simple chat endpoint"""
     try:
         message = request.get("message", "Hello!")
-        
         responses = [
             "I can help you create amazing anime content!",
             "What kind of anime would you like to generate?",
-            "Let's create something amazing together!",
-            "Try our free anime generation tools!"
+            "Let's create something amazing together!"
         ]
         
         import random
@@ -184,27 +156,6 @@ async def chat_endpoint(request: dict):
         logger.error(f"Chat error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Get generations
-@app.get("/generations")
-async def get_generations(limit: int = 10, offset: int = 0):
-    """Get recent generations"""
-    try:
-        sorted_generations = sorted(generations, key=lambda x: x.get("created_at", ""), reverse=True)
-        paginated = sorted_generations[offset:offset + limit]
-        
-        return {
-            "success": True,
-            "generations": paginated,
-            "total": len(generations),
-            "limit": limit,
-            "offset": offset
-        }
-        
-    except Exception as e:
-        logger.error(f"Generations error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     logger.error(f"Global exception: {str(exc)}")
@@ -214,10 +165,9 @@ async def global_exception_handler(request, exc):
         "message": "Something went wrong"
     }
 
-# Run app (for local development)
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 10000))
     logger.info(f"🚀 Starting server on port {port}")
     uvicorn.run(
         "main:app",

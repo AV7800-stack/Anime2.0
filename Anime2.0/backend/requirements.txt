@@ -1,21 +1,7 @@
-# Production Ready Requirements - Python 3.11 Compatible
-# Minimal packages for successful deployment
-
-# Core FastAPI
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-
-# Environment variables
-python-dotenv==1.0.0
-
-# HTTP requests
 requests==2.31.0
-
-# Data validation
-pydantic==2.5.0
-
-# Production server (compatible version)
-gunicorn==21.2.0
-
-# IMPORTANT: No heavy packages
-# No opencv, ffmpeg, numpy - these cause build failures
+python-dotenv==1.0.0
+pymongo==4.6.0
+pillow==10.1.0
+moviepy==1.0.3
