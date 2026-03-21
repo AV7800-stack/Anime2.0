@@ -1,0 +1,42 @@
+{
+  "name": "ai-anime-generator-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.1.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "axios": "^1.7.9",
+    "lucide-react": "^0.460.0",
+    "firebase": "^11.0.1",
+    "lru-cache": "^11.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "15.1.6",
+    "typescript": "^5.7.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "rimraf": "^6.0.1",
+    "glob": "^11.0.1",
+    "@eslint/object-schema": "^2.1.4",
+    "@eslint/config-array": "^0.27.4"
+  },
+  "overrides": {
+    "inflight": "npm:lru-cache@7.18.3",
+    "glob": "11.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
