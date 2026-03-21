@@ -1,4 +1,11 @@
 """
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"status": "running"}
 Anime2.0 FastAPI Backend - Production Ready
 Real Deployable Code for Render
 """
