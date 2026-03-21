@@ -1,23 +1,15 @@
-# Production requirements for Anime2.0 FastAPI backend
-# Python 3.11 compatible
+# Minimal requirements for Render deployment
+# Only essential packages to avoid conflicts
 
 # Core FastAPI
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 
-# HTTP and data handling
-requests==2.31.0
-pydantic==2.5.0
-
-# Environment and file handling
+# Environment variables
 python-dotenv==1.0.0
-python-multipart==0.0.6
 
-# Async support
-aiofiles==23.2.1
+# HTTP requests
+requests==2.31.0
 
-# Logging and monitoring (optional but recommended)
-python-json-logger==2.0.7
-
-# Production web server
-gunicorn==21.3.0
+# Data validation
+pydantic==2.5.0
