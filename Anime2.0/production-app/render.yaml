@@ -1,0 +1,38 @@
+services:
+  # Backend Service - Production Ready
+  - type: web
+    name: anime-production-backend
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: MONGO_URI
+        value: mongodb+srv://username:password@cluster.mongodb.net/dbname?retryWrites=true&w=majority
+      - key: JWT_SECRET
+        value: your-super-secret-jwt-key-change-this-in-production
+    healthCheckPath: /api/health
+    healthCheckTimeout: 30
+    healthCheckInterval: 10
+    healthCheckGracePeriod: 10
+    autoDeploy: true
+    
+  # Frontend Service - Production Ready
+  - type: web
+    name: anime-production-frontend
+    env: node
+    plan: free
+    buildCommand: "npm install && npm run build"
+    publishPath: .next
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://anime-production-backend.onrender.com
+    healthCheckPath: /
+    healthCheckTimeout: 30
+    healthCheckInterval: 10
+    healthCheckGracePeriod: 10
+    autoDeploy: true

@@ -1,0 +1,15 @@
+# Minimal requirements for Render deployment
+# Only essential packages to avoid conflicts
+
+# Core FastAPI
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# HTTP requests
+requests==2.31.0
+
+# Data validation
+pydantic==2.5.0
