@@ -1,0 +1,16 @@
+# Python 3.11 Compatible Requirements - No Paid APIs
+flask==3.0.3
+flask-cors==4.0.1
+python-dotenv==1.0.1
+requests==2.31.0
+pillow==10.2.0
+opencv-python==4.8.1.78
+numpy==1.24.4
+moviepy==1.0.3
+ffmpeg-python==0.2.0
+gunicorn==21.3.0
+
+# Free AI Services (No API Keys Required)
+# Pollinations.ai - 100% free, no key needed
+# FFmpeg for video processing
+# Pillow for image handling
