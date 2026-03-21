@@ -5,7 +5,7 @@ python-dotenv==1.0.1
 requests==2.31.0
 opencv-python==4.8.1.78
 ffmpeg-python==0.2.0
-gunicorn==21.3.0
+gunicorn==21.2.0
 
 # Free AI Services (No API Keys Required)
 # Pollinations.ai - 100% free, no key needed
